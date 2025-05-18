@@ -10,56 +10,25 @@ import { FeatureName, ModelSelectionOptions, OverridesOfModel, ProviderName } fr
 
 
 export const defaultProviderSettings = {
-	anthropic: {
-		apiKey: '',
-	},
-	openAI: {
-		apiKey: '',
-	},
-	deepseek: {
-		apiKey: '',
-	},
-	ollama: {
-		endpoint: 'http://127.0.0.1:11434',
-	},
-	vLLM: {
-		endpoint: 'http://localhost:8000',
-	},
-	openRouter: {
-		apiKey: '',
-	},
-	openAICompatible: {
-		endpoint: '',
-		apiKey: '',
-		headersJSON: '{}', // default to {}
-	},
-	gemini: {
-		apiKey: '',
-	},
-	groq: {
-		apiKey: '',
-	},
-	xAI: {
-		apiKey: '',
-	},
-	mistral: {
-		apiKey: '',
-	},
-	lmStudio: {
-		endpoint: 'http://localhost:1234',
-	},
-	liteLLM: { // https://docs.litellm.ai/docs/providers/openai_compatible
-		endpoint: '',
-	},
-	googleVertex: { // google https://cloud.google.com/vertex-ai/generative-ai/docs/multimodal/call-vertex-using-openai-library
-		region: 'us-west2',
-		project: '',
-	},
-	microsoftAzure: { // microsoft Azure Foundry
-		project: '', // really 'resource'
-		apiKey: '',
-		azureApiVersion: '2024-05-01-preview',
-	},
+       openAI: {
+               apiKey: '',
+       },
+       ollama: {
+               endpoint: 'http://127.0.0.1:11434',
+       },
+       // anthropic: { apiKey: '', },
+       // deepseek: { apiKey: '', },
+       // vLLM: { endpoint: 'http://localhost:8000', },
+       // openRouter: { apiKey: '', },
+       // openAICompatible: { endpoint: '', apiKey: '', headersJSON: '{}', },
+       // gemini: { apiKey: '', },
+       // groq: { apiKey: '', },
+       // xAI: { apiKey: '', },
+       // mistral: { apiKey: '', },
+       // lmStudio: { endpoint: 'http://localhost:1234', },
+       // liteLLM: { endpoint: '', },
+       // googleVertex: { region: 'us-west2', project: '', },
+       // microsoftAzure: { project: '', apiKey: '', azureApiVersion: '2024-05-01-preview', },
 } as const
 
 
@@ -1312,27 +1281,21 @@ const openRouterSettings: VoidStaticProviderInfo = {
 // ---------------- model settings of everything above ----------------
 
 const modelSettingsOfProvider: { [providerName in ProviderName]: VoidStaticProviderInfo } = {
-	openAI: openAISettings,
-	anthropic: anthropicSettings,
-	xAI: xAISettings,
-	gemini: geminiSettings,
-
-	// open source models
-	deepseek: deepseekSettings,
-	groq: groqSettings,
-
-	// open source models + providers (mixture of everything)
-	openRouter: openRouterSettings,
-	vLLM: vLLMSettings,
-	ollama: ollamaSettings,
-	openAICompatible: openaiCompatible,
-	mistral: mistralSettings,
-
-	liteLLM: liteLLMSettings,
-	lmStudio: lmStudioSettings,
-
-	googleVertex: googleVertexSettings,
-	microsoftAzure: microsoftAzureSettings,
+       openAI: openAISettings,
+       ollama: ollamaSettings,
+       // anthropic: anthropicSettings,
+       // xAI: xAISettings,
+       // gemini: geminiSettings,
+       // deepseek: deepseekSettings,
+       // groq: groqSettings,
+       // openRouter: openRouterSettings,
+       // vLLM: vLLMSettings,
+       // openAICompatible: openaiCompatible,
+       // mistral: mistralSettings,
+       // liteLLM: liteLLMSettings,
+       // lmStudio: lmStudioSettings,
+       // googleVertex: googleVertexSettings,
+       // microsoftAzure: microsoftAzureSettings,
 } as const
 
 

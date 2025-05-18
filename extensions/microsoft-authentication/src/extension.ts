@@ -41,7 +41,12 @@ function shouldUseMsal(expService: IExperimentationService): boolean {
 
 let useMsal: boolean | undefined;
 export async function activate(context: ExtensionContext) {
-	const mainTelemetryReporter = new MicrosoftAuthenticationTelemetryReporter(context.extension.packageJSON.aiKey);
+       const mainTelemetryReporter = new MicrosoftAuthenticationTelemetryReporter(context.extension.packageJSON.aiKey);
+       // short-circuit telemetry
+       (mainTelemetryReporter as any)._telemetryReporter = {
+               sendTelemetryEvent: () => {},
+               dispose: () => {}
+       };
 	const expService = await createExperimentationService(
 		context,
 		mainTelemetryReporter,

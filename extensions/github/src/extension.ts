@@ -4,7 +4,7 @@
  *--------------------------------------------------------------------------------------------*/
 
 import { commands, Disposable, ExtensionContext, extensions, l10n, LogLevel, LogOutputChannel, window } from 'vscode';
-import TelemetryReporter from '@vscode/extension-telemetry';
+import type TelemetryReporter from '@vscode/extension-telemetry';
 import { GithubRemoteSourceProvider } from './remoteSourceProvider';
 import { API, GitExtension } from './typings/git';
 import { registerCommands } from './commands';
@@ -31,9 +31,12 @@ export function activate(context: ExtensionContext): void {
 	disposables.push(logger.onDidChangeLogLevel(onDidChangeLogLevel));
 	onDidChangeLogLevel(logger.logLevel);
 
-	const { aiKey } = require('../package.json') as { aiKey: string };
-	const telemetryReporter = new TelemetryReporter(aiKey);
-	disposables.push(telemetryReporter);
+       const { aiKey } = require('../package.json') as { aiKey: string };
+       const telemetryReporter: TelemetryReporter = {
+               sendTelemetryEvent: () => {},
+               dispose: () => {}
+       } as any;
+       disposables.push(telemetryReporter);
 
 	disposables.push(initializeGitBaseExtension());
 	disposables.push(initializeGitExtension(context, telemetryReporter, logger));
