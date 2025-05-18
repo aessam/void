@@ -33,5 +33,19 @@ This repo contains the full sourcecode for Void. If you're new, welcome!
 
 Void is a fork of the [vscode](https://github.com/microsoft/vscode) repository. For a guide to the codebase, see [VOID_CODEBASE_GUIDE](https://github.com/voideditor/void/blob/main/VOID_CODEBASE_GUIDE.md).
 
+## Rotating API Keys
+
+You can supply API keys at runtime by registering a callback. Import `registerApiKeyProvider` from
+`src/vs/workbench/contrib/void/electron-main/llmMessage/sendLLMMessage.impl.ts` and call it with a
+function that returns the latest key for a provider.
+
+```ts
+import { registerApiKeyProvider } from './sendLLMMessage.impl.js';
+
+registerApiKeyProvider(async (providerName) => {
+    return fetchKeySomewhere(providerName);
+});
+```
+
 ## Support
 You can always reach us in our Discord server or contact us via email: hello@voideditor.com.

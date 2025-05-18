@@ -60,12 +60,26 @@ const invalidApiKeyMessage = (providerName: ProviderName) => `Invalid ${displayI
 
 
 const parseHeadersJSON = (s: string | undefined): Record<string, string | null | undefined> | undefined => {
-	if (!s) return undefined
-	try {
-		return JSON.parse(s)
-	} catch (e) {
-		throw new Error(`Error parsing OpenAI-Compatible headers: ${s} is not a valid JSON.`)
-	}
+        if (!s) return undefined
+        try {
+                return JSON.parse(s)
+        } catch (e) {
+                throw new Error(`Error parsing OpenAI-Compatible headers: ${s} is not a valid JSON.`)
+        }
+}
+
+let apiKeyProvider: ((providerName: ProviderName) => string | Promise<string> | undefined) | undefined
+
+export const registerApiKeyProvider = (provider: (providerName: ProviderName) => string | Promise<string> | undefined) => {
+       apiKeyProvider = provider
+}
+
+const getApiKey = async (providerName: ProviderName, settings: SettingsOfProvider) => {
+       if (apiKeyProvider) {
+               const result = await apiKeyProvider(providerName)
+               if (result) return result
+       }
+       return settings[providerName].apiKey
 }
 
 const newOpenAICompatibleSDK = async ({ settingsOfProvider, providerName, includeInPayload }: { settingsOfProvider: SettingsOfProvider, providerName: ProviderName, includeInPayload?: { [s: string]: any } }) => {
@@ -73,10 +87,9 @@ const newOpenAICompatibleSDK = async ({ settingsOfProvider, providerName, includ
 		dangerouslyAllowBrowser: true,
 		...includeInPayload,
 	}
-	if (providerName === 'openAI') {
-		const thisConfig = settingsOfProvider[providerName]
-		return new OpenAI({ apiKey: thisConfig.apiKey, ...commonPayloadOpts })
-	}
+       if (providerName === 'openAI') {
+               return new OpenAI({ apiKey: await getApiKey('openAI', settingsOfProvider), ...commonPayloadOpts })
+       }
 	else if (providerName === 'ollama') {
 		const thisConfig = settingsOfProvider[providerName]
 		return new OpenAI({ baseURL: `${thisConfig.endpoint}/v1`, apiKey: 'noop', ...commonPayloadOpts })
@@ -93,11 +106,11 @@ const newOpenAICompatibleSDK = async ({ settingsOfProvider, providerName, includ
 		const thisConfig = settingsOfProvider[providerName]
 		return new OpenAI({ baseURL: `${thisConfig.endpoint}/v1`, apiKey: 'noop', ...commonPayloadOpts })
 	}
-	else if (providerName === 'openRouter') {
-		const thisConfig = settingsOfProvider[providerName]
-		return new OpenAI({
-			baseURL: 'https://openrouter.ai/api/v1',
-			apiKey: thisConfig.apiKey,
+       else if (providerName === 'openRouter') {
+               const thisConfig = settingsOfProvider[providerName]
+               return new OpenAI({
+                       baseURL: 'https://openrouter.ai/api/v1',
+                       apiKey: await getApiKey('openRouter', settingsOfProvider),
 			defaultHeaders: {
 				'HTTP-Referer': 'https://voideditor.com', // Optional, for including your app on openrouter.ai rankings.
 				'X-Title': 'Void', // Optional. Shows in rankings on openrouter.ai.
